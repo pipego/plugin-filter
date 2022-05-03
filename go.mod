@@ -1,9 +1,9 @@
-module github.com/pipego/plugin-filter/nodename
+module github.com/pipego/plugin-filter
 
 go 1.18
 
 require (
-	github.com/hashicorp/go-hclog v0.14.1
+	github.com/hashicorp/go-hclog v1.2.0
 	github.com/hashicorp/go-plugin v1.4.3
 )
 

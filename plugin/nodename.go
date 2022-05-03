@@ -3,26 +3,26 @@ package main
 import (
 	"github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/nodename/proto"
+	"github.com/pipego/plugin-filter/proto"
 )
 
 type NodeName struct{}
 
-func (n *NodeName) NodeName() string {
+func (n *NodeName) Filter() string {
 	return "TODO"
 }
 
 var handshakeConfig = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
 	MagicCookieKey:   "plugin-filter",
-	MagicCookieValue: "NodeName",
+	MagicCookieValue: "plugin-filter",
 }
 
 func main() {
 	n := &NodeName{}
 
 	var pluginMap = map[string]plugin.Plugin{
-		"NodeName": &proto.NodeNamePlugin{Impl: n},
+		"NodeName": &proto.FilterPlugin{Impl: n},
 	}
 
 	plugin.Serve(&plugin.ServeConfig{

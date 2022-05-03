@@ -8,12 +8,12 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/test/proto"
+	"github.com/pipego/plugin-filter/proto"
 )
 
 func main() {
 	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "test",
+		Name:   "plugin-filter",
 		Output: os.Stderr,
 		Level:  hclog.Error,
 	})
@@ -21,7 +21,7 @@ func main() {
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: handshakeConfig,
 		Plugins:         pluginMap,
-		Cmd:             exec.Command("./bin/plugin-filter-nodename"),
+		Cmd:             exec.Command("./plugin/filter-nodename"),
 		Logger:          logger,
 	})
 	defer client.Kill()
@@ -29,17 +29,17 @@ func main() {
 	rpcClient, _ := client.Client()
 
 	raw, _ := rpcClient.Dispense("NodeName")
-	n := raw.(proto.NodeName)
+	n := raw.(proto.Filter)
 
-	fmt.Println(n.NodeName())
+	fmt.Println(n.Filter())
 }
 
 var handshakeConfig = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
 	MagicCookieKey:   "plugin-filter",
-	MagicCookieValue: "NodeName",
+	MagicCookieValue: "plugin-filter",
 }
 
 var pluginMap = map[string]plugin.Plugin{
-	"NodeName": &proto.NodeNamePlugin{},
+	"NodeName": &proto.FilterPlugin{},
 }

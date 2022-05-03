@@ -21,11 +21,7 @@
 ```bash
 # Template
 go env -w GOPROXY=https://goproxy.cn,direct
-
-cd nodename
-golangci-lint run
-CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/plugin-filter-nodename main.go
-upx plugin/plugin-filter-nodename
+CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/filter-nodename plugin/nodename.go
 ```
 
 
@@ -33,14 +29,8 @@ upx plugin/plugin-filter-nodename
 ```bash
 # Test
 go env -w GOPROXY=https://goproxy.cn,direct
-
-cd test
-golangci-lint run
-CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o bin/test main.go
-upx bin/test
-
-cp ../nodename/plugin/* bin/
-./bin/test
+CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin-filter-test main.go
+./plugin-filter-test
 ```
 
 
