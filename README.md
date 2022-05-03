@@ -1,10 +1,6 @@
 # plugin-filter
 
-[![Build Status](https://github.com/pipego/plugin-filter/workflows/ci/badge.svg?branch=main&event=push)](https://github.com/pipego/plugin-filter/actions?query=workflow%3Aci)
-[![codecov](https://codecov.io/gh/pipego/plugin-filter/branch/main/graph/badge.svg?token=y5anikgcTz)](https://codecov.io/gh/pipego/plugin-filter)
-[![Go Report Card](https://goreportcard.com/badge/github.com/pipego/plugin-filter)](https://goreportcard.com/report/github.com/pipego/plugin-filter)
 [![License](https://img.shields.io/github/license/pipego/plugin-filter.svg)](https://github.com/pipego/plugin-filter/blob/main/LICENSE)
-[![Tag](https://img.shields.io/github/tag/pipego/plugin-filter.svg)](https://github.com/pipego/plugin-filter/tags)
 
 
 
@@ -23,24 +19,27 @@
 ## Run
 
 ```bash
-TBD
+go env -w GOPROXY=https://goproxy.cn,direct
+
+cd template
+golangci-lint run
+CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/plugin-filter-template main.go
+upx plugin/plugin-filter-template
+
+cd test
+golangci-lint run
+CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o bin/test main.go
+cp ../template/plugin/plugin-filter-template bin/
+./bin/test
 ```
 
 
 
 ## Docker
 
-```bash
-TBD
-```
-
 
 
 ## Usage
-
-```
-TBD
-```
 
 
 
