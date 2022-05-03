@@ -21,17 +21,17 @@ func main() {
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: handshakeConfig,
 		Plugins:         pluginMap,
-		Cmd:             exec.Command("./bin/plugin-filter-template"),
+		Cmd:             exec.Command("./bin/plugin-filter-nodename"),
 		Logger:          logger,
 	})
 	defer client.Kill()
 
 	rpcClient, _ := client.Client()
 
-	raw, _ := rpcClient.Dispense("template")
-	template := raw.(proto.Template)
+	raw, _ := rpcClient.Dispense("nodename")
+	nodename := raw.(proto.NodeName)
 
-	fmt.Println(template.Template())
+	fmt.Println(nodename.NodeName())
 }
 
 // handshakeConfigs are used to just do a basic handshake between
@@ -45,5 +45,5 @@ var handshakeConfig = plugin.HandshakeConfig{
 }
 
 var pluginMap = map[string]plugin.Plugin{
-	"template": &proto.TemplatePlugin{},
+	"nodename": &proto.NodeNamePlugin{},
 }

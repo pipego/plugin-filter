@@ -22,10 +22,10 @@
 # Template
 go env -w GOPROXY=https://goproxy.cn,direct
 
-cd template
+cd nodename
 golangci-lint run
-CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/plugin-filter-template main.go
-upx plugin/plugin-filter-template
+CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/plugin-filter-nodename main.go
+upx plugin/plugin-filter-nodename
 ```
 
 
@@ -39,7 +39,7 @@ golangci-lint run
 CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o bin/test main.go
 upx bin/test
 
-cp ../template/plugin/* bin/
+cp ../nodename/plugin/* bin/
 ./bin/test
 ```
 
@@ -50,6 +50,11 @@ cp ../template/plugin/* bin/
 
 
 ## Usage
+
+- `NodeName`: Checks if a Task spec node name matches the current node.
+- `NodeResourcesFit`: Checks if the node has all the resources that the Task is requesting.
+- `NodeSelector`: Checks if a Task spec node label matches the current node.
+- `NodeUnschedulable`: Filters out nodes that have .spec.unschedulable set to true.
 
 
 
@@ -66,5 +71,6 @@ Project License can be found [here](LICENSE).
 ## Reference
 
 - [go-plugin](https://github.com/hashicorp/go-plugin)
+- [kube-scheduler-config](https://kubernetes.io/docs/reference/scheduling/config)
 - [kube-scheduler-interface](https://github.com/kubernetes/kubernetes/blob/master/pkg/scheduler/framework/interface.go)
 - [kube-scheduler-plugins](https://github.com/kubernetes/kubernetes/blob/master/pkg/scheduler/framework/plugins)

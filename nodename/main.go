@@ -2,19 +2,17 @@ package main
 
 import (
 	"os"
+	"plugin"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-
-	"github.com/pipego/plugin-filter/template/proto"
+	"github.com/pipego/plugin-filter/nodename/proto"
 )
 
-type TemplateHello struct {
+type NodeNameHello struct {
 	logger hclog.Logger
 }
 
-func (t *TemplateHello) Template() string {
-	t.logger.Debug("message from TemplateHello.Template")
+func (n *NodeNameHello) NodeName() string {
+	n.logger.Debug("message from NodeNameHello.NodeName")
 	return "Hello"
 }
 
@@ -35,12 +33,12 @@ func main() {
 		JSONFormat: true,
 	})
 
-	template := &TemplateHello{
+	nodename := &NodeNameHello{
 		logger: logger,
 	}
 
 	var pluginMap = map[string]plugin.Plugin{
-		"template": &proto.TemplatePlugin{Impl: template},
+		"nodename": &proto.NodeNamePlugin{Impl: nodename},
 	}
 
 	logger.Debug("message from plugin", "foo", "bar")
