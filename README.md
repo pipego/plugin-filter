@@ -19,17 +19,27 @@
 ## Run
 
 ```bash
+# Template
 go env -w GOPROXY=https://goproxy.cn,direct
 
 cd template
 golangci-lint run
 CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/plugin-filter-template main.go
 upx plugin/plugin-filter-template
+```
+
+
+
+```bash
+# Test
+go env -w GOPROXY=https://goproxy.cn,direct
 
 cd test
 golangci-lint run
 CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o bin/test main.go
-cp ../template/plugin/plugin-filter-template bin/
+upx bin/test
+
+cp ../template/plugin/* bin/
 ./bin/test
 ```
 

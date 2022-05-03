@@ -12,14 +12,12 @@ import (
 )
 
 func main() {
-	// Create an hclog.Logger
 	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "plugin-filter",
+		Name:   "hclog",
 		Output: os.Stdout,
 		Level:  hclog.Debug,
 	})
 
-	// We're a host! Start by launching the plugin process.
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: handshakeConfig,
 		Plugins:         pluginMap,
@@ -28,16 +26,12 @@ func main() {
 	})
 	defer client.Kill()
 
-	// Connect via RPC
 	rpcClient, _ := client.Client()
 
-	// Request the plugin
-	raw, _ := rpcClient.Dispense("greeter")
+	raw, _ := rpcClient.Dispense("template")
+	template := raw.(proto.Template)
 
-	// We should have a Greeter now! This feels like a normal interface
-	// implementation but is in fact over an RPC connection.
-	greeter := raw.(proto.Greeter)
-	fmt.Println(greeter.Greet())
+	fmt.Println(template.Template())
 }
 
 // handshakeConfigs are used to just do a basic handshake between
@@ -50,7 +44,6 @@ var handshakeConfig = plugin.HandshakeConfig{
 	MagicCookieValue: "hello",
 }
 
-// pluginMap is the map of plugins we can dispense.
 var pluginMap = map[string]plugin.Plugin{
-	"greeter": &proto.GreeterPlugin{},
+	"template": &proto.TemplatePlugin{},
 }

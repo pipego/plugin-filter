@@ -9,14 +9,13 @@ import (
 	"github.com/pipego/plugin-filter/template/proto"
 )
 
-// Here is a real implementation of Greeter
-type GreeterHello struct {
+type TemplateHello struct {
 	logger hclog.Logger
 }
 
-func (g *GreeterHello) Greet() string {
-	g.logger.Debug("message from GreeterHello.Greet")
-	return "Hello!"
+func (t *TemplateHello) Template() string {
+	t.logger.Debug("message from TemplateHello.Template")
+	return "Hello"
 }
 
 // handshakeConfigs are used to just do a basic handshake between
@@ -36,12 +35,12 @@ func main() {
 		JSONFormat: true,
 	})
 
-	greeter := &GreeterHello{
+	template := &TemplateHello{
 		logger: logger,
 	}
-	// pluginMap is the map of plugins we can dispense.
+
 	var pluginMap = map[string]plugin.Plugin{
-		"greeter": &proto.GreeterPlugin{Impl: greeter},
+		"template": &proto.TemplatePlugin{Impl: template},
 	}
 
 	logger.Debug("message from plugin", "foo", "bar")
