@@ -1,6 +1,9 @@
 # plugin-filter
 
+[![Build Status](https://github.com/pipego/plugin-filter/workflows/ci/badge.svg?branch=main&event=push)](https://github.com/pipego/plugin-filter/actions?query=workflow%3Aci)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pipego/plugin-filter)](https://goreportcard.com/report/github.com/pipego/plugin-filter)
 [![License](https://img.shields.io/github/license/pipego/plugin-filter.svg)](https://github.com/pipego/plugin-filter/blob/main/LICENSE)
+[![Tag](https://img.shields.io/github/tag/pipego/plugin-filter.svg)](https://github.com/pipego/plugin-filter/tags)
 
 
 
@@ -19,17 +22,8 @@
 ## Run
 
 ```bash
-# Template
-go env -w GOPROXY=https://goproxy.cn,direct
-CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin/filter-nodename plugin/nodename.go
-```
-
-
-
-```bash
-# Test
-go env -w GOPROXY=https://goproxy.cn,direct
-CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin-filter-test main.go
+make lint
+make build
 ./plugin-filter-test
 ```
 
@@ -41,10 +35,10 @@ CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o plugin-filter
 
 ## Usage
 
-- `NodeName`: Checks if a Task spec node name matches the current node.
-- `NodeResourcesFit`: Checks if the node has all the resources that the Task is requesting.
-- `NodeSelector`: Checks if a Task spec node label matches the current node.
-- `NodeUnschedulable`: Filters out nodes that have .spec.unschedulable set to true.
+- `plugin/nodename.go`: Checks if a Task spec node name matches the current node.
+- `plugin/noderesourcesfit.go`: Checks if the node has all the resources that the Task is requesting.
+- `plugin/nodeselector.go`: Checks if a Task spec node label matches the current node.
+- `plugin/nodeunschedulable.go`: Filters out nodes that have .spec.unschedulable set to true.
 
 
 

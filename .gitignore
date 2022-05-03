@@ -13,5 +13,5 @@
 
 .idea/
 bin/
-plugin-filter-*
 plugin/filter-*
+plugin-filter-*
