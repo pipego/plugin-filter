@@ -10,7 +10,9 @@ type NodeName interface {
 	NodeName() string
 }
 
-type NodeNameRPC struct{ client *rpc.Client }
+type NodeNameRPC struct {
+	client *rpc.Client
+}
 
 func (n *NodeNameRPC) NodeName() string {
 	var resp string
@@ -37,6 +39,6 @@ func (n *NodeNamePlugin) Server(*plugin.MuxBroker) (interface{}, error) {
 	return &NodeNameRPCServer{Impl: n.Impl}, nil
 }
 
-func (NodeNamePlugin) Client(_ *plugin.MuxBroker, c *rpc.Client) (interface{}, error) {
+func (NodeNamePlugin) Client(b *plugin.MuxBroker, c *rpc.Client) (interface{}, error) {
 	return &NodeNameRPC{client: c}, nil
 }

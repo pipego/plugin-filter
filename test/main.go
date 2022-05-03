@@ -13,9 +13,9 @@ import (
 
 func main() {
 	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "hclog",
-		Output: os.Stdout,
-		Level:  hclog.Debug,
+		Name:   "test",
+		Output: os.Stderr,
+		Level:  hclog.Error,
 	})
 
 	client := plugin.NewClient(&plugin.ClientConfig{
@@ -40,8 +40,8 @@ func main() {
 // directory. It is a UX feature, not a security feature.
 var handshakeConfig = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
-	MagicCookieKey:   "BASIC_PLUGIN",
-	MagicCookieValue: "hello",
+	MagicCookieKey:   "plugin-filter",
+	MagicCookieValue: "nodename",
 }
 
 var pluginMap = map[string]plugin.Plugin{

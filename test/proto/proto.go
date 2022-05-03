@@ -6,37 +6,39 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
-type Template interface {
-	Template() string
+type NodeName interface {
+	NodeName() string
 }
 
-type TemplateRPC struct{ client *rpc.Client }
+type NodeNameRPC struct {
+	client *rpc.Client
+}
 
-func (t *TemplateRPC) Template() string {
+func (n *NodeNameRPC) NodeName() string {
 	var resp string
 
-	_ = t.client.Call("Plugin.Template", new(interface{}), &resp)
+	_ = n.client.Call("Plugin.NodeName", new(interface{}), &resp)
 
 	return resp
 }
 
-type TemplateRPCServer struct {
-	Impl Template
+type NodeNameRPCServer struct {
+	Impl NodeName
 }
 
-func (t *TemplateRPCServer) Template(args interface{}, resp *string) error {
-	*resp = t.Impl.Template()
+func (n *NodeNameRPCServer) NodeName(args interface{}, resp *string) error {
+	*resp = n.Impl.NodeName()
 	return nil
 }
 
-type TemplatePlugin struct {
-	Impl Template
+type NodeNamePlugin struct {
+	Impl NodeName
 }
 
-func (t *TemplatePlugin) Server(*plugin.MuxBroker) (interface{}, error) {
-	return &TemplateRPCServer{Impl: t.Impl}, nil
+func (n *NodeNamePlugin) Server(*plugin.MuxBroker) (interface{}, error) {
+	return &NodeNameRPCServer{Impl: n.Impl}, nil
 }
 
-func (TemplatePlugin) Client(b *plugin.MuxBroker, c *rpc.Client) (interface{}, error) {
-	return &TemplateRPC{client: c}, nil
+func (NodeNamePlugin) Client(b *plugin.MuxBroker, c *rpc.Client) (interface{}, error) {
+	return &NodeNameRPC{client: c}, nil
 }
