@@ -28,22 +28,18 @@ func main() {
 
 	rpcClient, _ := client.Client()
 
-	raw, _ := rpcClient.Dispense("nodename")
-	nodename := raw.(proto.NodeName)
+	raw, _ := rpcClient.Dispense("NodeName")
+	n := raw.(proto.NodeName)
 
-	fmt.Println(nodename.NodeName())
+	fmt.Println(n.NodeName())
 }
 
-// handshakeConfigs are used to just do a basic handshake between
-// a plugin and host. If the handshake fails, a user friendly error is shown.
-// This prevents users from executing bad plugins or executing a plugin
-// directory. It is a UX feature, not a security feature.
 var handshakeConfig = plugin.HandshakeConfig{
 	ProtocolVersion:  1,
 	MagicCookieKey:   "plugin-filter",
-	MagicCookieValue: "nodename",
+	MagicCookieValue: "NodeName",
 }
 
 var pluginMap = map[string]plugin.Plugin{
-	"nodename": &proto.NodeNamePlugin{},
+	"NodeName": &proto.NodeNamePlugin{},
 }

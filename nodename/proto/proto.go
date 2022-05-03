@@ -16,9 +16,9 @@ type NodeNameRPC struct {
 
 func (n *NodeNameRPC) NodeName() string {
 	var resp string
-
-	_ = n.client.Call("Plugin.NodeName", new(interface{}), &resp)
-
+	if err := n.client.Call("Plugin.NodeName", new(interface{}), &resp); err != nil {
+		panic(err)
+	}
 	return resp
 }
 
