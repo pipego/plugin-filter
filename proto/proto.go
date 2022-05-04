@@ -15,10 +15,6 @@ const (
 	ResourceStorage = "storage"
 )
 
-type Filter interface {
-	Filter(*Args) Status
-}
-
 type Args struct {
 	Node Node
 	Task Task
@@ -41,6 +37,10 @@ type Resource struct {
 	MilliCPU int64
 	Memory   int64
 	Storage  int64
+}
+
+type Filter interface {
+	Filter(*Args) Status
 }
 
 type Status struct {
