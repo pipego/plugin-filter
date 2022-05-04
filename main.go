@@ -31,7 +31,13 @@ func main() {
 	raw, _ := rpcClient.Dispense("NodeName")
 	n := raw.(proto.Filter)
 
-	fmt.Println(n.Filter())
+	args := &proto.Args{
+		Node: proto.Node{Name: "Node"},
+		Task: proto.Task{NodeName: "Task"},
+	}
+
+	status := n.Filter(args)
+	fmt.Println(status.Error)
 }
 
 var handshakeConfig = plugin.HandshakeConfig{

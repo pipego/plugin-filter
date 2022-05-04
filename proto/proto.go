@@ -7,16 +7,33 @@ import (
 )
 
 type Filter interface {
-	Filter() string
+	Filter(*Args) Status
+}
+
+type Args struct {
+	Node Node
+	Task Task
+}
+
+type Node struct {
+	Name string
+}
+
+type Task struct {
+	NodeName string
+}
+
+type Status struct {
+	Error string
 }
 
 type FilterRPC struct {
 	client *rpc.Client
 }
 
-func (n *FilterRPC) Filter() string {
-	var resp string
-	if err := n.client.Call("Plugin.Filter", new(interface{}), &resp); err != nil {
+func (n *FilterRPC) Filter(args *Args) Status {
+	var resp Status
+	if err := n.client.Call("Plugin.Filter", args, &resp); err != nil {
 		panic(err)
 	}
 	return resp
@@ -26,8 +43,8 @@ type FilterRPCServer struct {
 	Impl Filter
 }
 
-func (n *FilterRPCServer) Filter(args interface{}, resp *string) error {
-	*resp = n.Impl.Filter()
+func (n *FilterRPCServer) Filter(args *Args, resp *Status) error {
+	*resp = n.Impl.Filter(args)
 	return nil
 }
 
