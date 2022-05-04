@@ -34,7 +34,21 @@ var (
 		},
 		// Plugin: NodeResourcesfit
 		{
-			args: &proto.Args{},
+			args: &proto.Args{
+				Node: proto.Node{
+					AllocatableResource: proto.Resource{
+						MilliCPU: 400,
+					},
+					RequestedResource: proto.Resource{
+						MilliCPU: 200,
+					},
+				},
+				Task: proto.Task{
+					RequestedResource: proto.Resource{
+						MilliCPU: 500,
+					},
+				},
+			},
 			name: "NodeResourcesFit",
 			path: "./plugin/filter-noderesourcesfit",
 		},

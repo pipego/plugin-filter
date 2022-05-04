@@ -6,6 +6,15 @@ import (
 	"github.com/hashicorp/go-plugin"
 )
 
+const (
+	// ResourceCPU CPU, in cores. (500m = .5 cores)
+	ResourceCPU = "cpu"
+	// ResourceMemory Memory, in bytes. (500Gi = 500GiB = 500 * 1024 * 1024 * 1024)
+	ResourceMemory = "memory"
+	// ResourceStorage Volume size, in bytes (e,g. 5Gi = 5GiB = 5 * 1024 * 1024 * 1024)
+	ResourceStorage = "storage"
+)
+
 type Filter interface {
 	Filter(*Args) Status
 }
@@ -16,13 +25,22 @@ type Args struct {
 }
 
 type Node struct {
-	Name          string
-	Unschedulable bool
+	AllocatableResource Resource
+	Name                string
+	RequestedResource   Resource
+	Unschedulable       bool
 }
 
 type Task struct {
 	NodeName               string
+	RequestedResource      Resource
 	ToleratesUnschedulable bool
+}
+
+type Resource struct {
+	MilliCPU int64
+	Memory   int64
+	Storage  int64
 }
 
 type Status struct {
