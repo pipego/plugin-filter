@@ -52,11 +52,22 @@ var (
 			name: "NodeResourcesFit",
 			path: "./plugin/filter-noderesourcesfit",
 		},
-		// Plugin: NodeSelector
+		// Plugin: NodeAffinity
 		{
-			args: &proto.Args{},
-			name: "NodeSelector",
-			path: "./plugin/filter-nodeselector",
+			args: &proto.Args{
+				Node: proto.Node{
+					Label: proto.Label{
+						"disktype": "ssd",
+					},
+				},
+				Task: proto.Task{
+					NodeSelector: proto.Selector{
+						"disktype": []string{"hdd"},
+					},
+				},
+			},
+			name: "NodeAffinity",
+			path: "./plugin/filter-nodeaffinity",
 		},
 		// Plugin: NodeUnschedulable
 		{

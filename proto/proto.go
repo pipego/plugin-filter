@@ -21,23 +21,29 @@ type Args struct {
 }
 
 type Node struct {
-	AllocatableResource Resource
-	Name                string
-	RequestedResource   Resource
-	Unschedulable       bool
+	AllocatableResource Resource `json:"allocatableResource"`
+	Label               Label    `json:"label"`
+	Name                string   `json:"name"`
+	RequestedResource   Resource `json:"requestedResource"`
+	Unschedulable       bool     `json:"unschedulable"`
 }
 
 type Task struct {
-	NodeName               string
-	RequestedResource      Resource
-	ToleratesUnschedulable bool
+	NodeName               string   `json:"nodeName"`
+	NodeSelector           Selector `json:"nodeSelector"`
+	RequestedResource      Resource `json:"requestedResource"`
+	ToleratesUnschedulable bool     `json:"toleratesUnschedulable"`
 }
 
+type Label map[string]string
+
 type Resource struct {
-	MilliCPU int64
-	Memory   int64
-	Storage  int64
+	MilliCPU int64 `json:"milliCPU"`
+	Memory   int64 `json:"memory"`
+	Storage  int64 `json:"storage"`
 }
+
+type Selector map[string][]string
 
 type Filter interface {
 	Filter(*Args) Status

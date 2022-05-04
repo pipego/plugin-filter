@@ -35,9 +35,9 @@ make build
 
 ## Usage
 
+- `plugin/nodeaffinity.go`: Implements node selectors and node affinity.
 - `plugin/nodename.go`: Checks if a Task spec node name matches the current node.
 - `plugin/noderesourcesfit.go`: Checks if the node has all the resources that the Task is requesting.
-- `plugin/nodeselector.go`: Checks if a Task spec node label matches the current node.
 - `plugin/nodeunschedulable.go`: Filters out nodes that have .spec.unschedulable set to true.
 
 
