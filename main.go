@@ -11,32 +11,60 @@ import (
 	"github.com/pipego/plugin-filter/proto"
 )
 
+type config struct {
+	args *proto.Args
+	name string
+	path string
+}
+
+var (
+	configs = []config{
+		// Plugin: NodeName
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					Name: "Node",
+				},
+				Task: proto.Task{
+					NodeName: "Task",
+				},
+			},
+			name: "NodeName",
+			path: "./plugin/filter-nodename",
+		},
+		// Plugin: NodeResourcesfit
+		{
+			args: &proto.Args{},
+			name: "NodeResourcesFit",
+			path: "./plugin/filter-noderesourcesfit",
+		},
+		// Plugin: NodeSelector
+		{
+			args: &proto.Args{},
+			name: "NodeSelector",
+			path: "./plugin/filter-nodeselector",
+		},
+		// Plugin: NodeUnschedulable
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					Unschedulable: true,
+				},
+				Task: proto.Task{
+					ToleratesUnschedulable: false,
+				},
+			},
+			name: "NodeUnschedulable",
+			path: "./plugin/filter-nodeunschedulable",
+		},
+	}
+)
+
 func main() {
-	// Plugin: NodeName
-	args := &proto.Args{
-		Node: proto.Node{
-			Name: "Node",
-		},
-		Task: proto.Task{
-			NodeName: "Task",
-		},
+	for _, item := range configs {
+		status, _ := helper(item.path, item.name, item.args)
+		fmt.Println(status.Error)
 	}
-
-	status, _ := helper("./plugin/filter-nodename", "NodeName", args)
-	fmt.Println(status.Error)
-
-	// Plugin: NodeUnschedulable
-	args = &proto.Args{
-		Node: proto.Node{
-			Unschedulable: true,
-		},
-		Task: proto.Task{
-			ToleratesUnschedulable: false,
-		},
-	}
-
-	status, _ = helper("./plugin/filter-nodeunschedulable", "NodeUnschedulable", args)
-	fmt.Println(status.Error)
 }
 
 func helper(path, name string, args *proto.Args) (proto.Status, error) {

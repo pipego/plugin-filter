@@ -6,17 +6,16 @@ import (
 )
 
 const (
-	ErrReasonName = "NodeName: node(s) didn't match the requested node name"
+	ErrReasonSelector = "NodeSelector: node(s) didn't match the selector"
 )
 
-type NodeName struct{}
+type NodeSelector struct{}
 
-func (n *NodeName) Filter(args *proto.Args) proto.Status {
+func (n *NodeSelector) Filter(args *proto.Args) proto.Status {
 	var status proto.Status
 
-	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
-		status.Error = ErrReasonName
-	}
+	// TODO
+	status.Error = ErrReasonSelector
 
 	return status
 }
@@ -30,7 +29,7 @@ func main() {
 	}
 
 	pluginMap := map[string]plugin.Plugin{
-		"NodeName": &proto.FilterPlugin{Impl: &NodeName{}},
+		"NodeSelector": &proto.FilterPlugin{Impl: &NodeSelector{}},
 	}
 
 	plugin.Serve(&plugin.ServeConfig{

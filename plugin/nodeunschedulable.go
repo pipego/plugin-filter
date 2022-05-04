@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ErrReasonUnschedulable = "node(s) were unschedulable"
+	ErrReasonUnschedulable = "NodeUnschedulable: node(s) were unschedulable"
 )
 
 type NodeUnschedulable struct{}
