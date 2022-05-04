@@ -6,16 +6,16 @@ import (
 )
 
 const (
-	ErrReasonNodeName = "node(s) didn't match the requested node name"
+	ErrReasonUnschedulable = "node(s) were unschedulable"
 )
 
-type NodeName struct{}
+type NodeUnschedulable struct{}
 
-func (n *NodeName) Filter(args *proto.Args) proto.Status {
+func (n *NodeUnschedulable) Filter(args *proto.Args) proto.Status {
 	var status proto.Status
 
-	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
-		status.Error = ErrReasonNodeName
+	if args.Node.Unschedulable && !args.Task.ToleratesUnschedulable {
+		status.Error = ErrReasonUnschedulable
 	}
 
 	return status
@@ -29,8 +29,8 @@ func main() {
 		MagicCookieValue: "plugin-filter",
 	}
 
-	pluginMap := map[string]plugin.Plugin{
-		"NodeName": &proto.FilterPlugin{Impl: &NodeName{}},
+	var pluginMap = map[string]plugin.Plugin{
+		"NodeUnschedulable": &proto.FilterPlugin{Impl: &NodeUnschedulable{}},
 	}
 
 	plugin.Serve(&plugin.ServeConfig{

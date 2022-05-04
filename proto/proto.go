@@ -16,11 +16,13 @@ type Args struct {
 }
 
 type Node struct {
-	Name string
+	Name          string
+	Unschedulable bool
 }
 
 type Task struct {
-	NodeName string
+	NodeName               string
+	ToleratesUnschedulable bool
 }
 
 type Status struct {
