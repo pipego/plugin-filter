@@ -1,6 +1,7 @@
 package proto
 
 import (
+	"math"
 	"net/rpc"
 
 	"github.com/hashicorp/go-plugin"
@@ -13,6 +14,35 @@ const (
 	ResourceMemory = "memory"
 	// ResourceStorage Volume size, in bytes (e,g. 5Gi = 5GiB = 5 * 1024 * 1024 * 1024)
 	ResourceStorage = "storage"
+)
+
+const (
+	// DefaultMilliCPURequest defines default milli cpu request number.
+	DefaultMilliCPURequest int64 = 100 // 0.1 core
+	// DefaultMemoryRequest defines default memory request size.
+	DefaultMemoryRequest int64 = 200 * 1024 * 1024 // 200 MB
+)
+
+// Resources to consider when scoring.
+// The default resource set includes "cpu" and "memory" with an equal weight.
+const (
+	// DefaultCPUWeight defines default cpu weight (allowed weights go from 1 to 100)
+	DefaultCPUWeight int64 = 1
+	// DefaultMemoryWeight defines default memory weight (allowed weights go from 1 to 100)
+	DefaultMemoryWeight int64 = 1
+	// DefaultStorageWeight defines default storage weight (allowed weights go from 1 to 100)
+	DefaultStorageWeight int64 = 1
+)
+
+const (
+	// MaxNodeScore is the maximum score a Score plugin is expected to return.
+	MaxNodeScore int64 = 100
+
+	// MinNodeScore is the minimum score a Score plugin is expected to return.
+	MinNodeScore int64 = 0
+
+	// MaxTotalScore is the maximum total score.
+	MaxTotalScore int64 = math.MaxInt64
 )
 
 type Args struct {
