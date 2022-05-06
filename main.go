@@ -32,7 +32,7 @@ var (
 			name: "NodeName",
 			path: "./plugin/filter-nodename",
 		},
-		// Plugin: NodeResourcesfit
+		// Plugin: NodeResourcesFit
 		{
 			args: &proto.Args{
 				Node: proto.Node{
