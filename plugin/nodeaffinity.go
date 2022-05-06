@@ -1,9 +1,10 @@
 package main
 
 import (
+	"sort"
+
 	"github.com/hashicorp/go-plugin"
 	"github.com/pipego/plugin-filter/proto"
-	"sort"
 )
 
 const (

@@ -26,6 +26,18 @@ var (
 					Name: "Node",
 				},
 				Task: proto.Task{
+					NodeName: "Node",
+				},
+			},
+			name: "NodeName",
+			path: "./plugin/filter-nodename",
+		},
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					Name: "Node",
+				},
+				Task: proto.Task{
 					NodeName: "Task",
 				},
 			},
@@ -33,6 +45,25 @@ var (
 			path: "./plugin/filter-nodename",
 		},
 		// Plugin: NodeResourcesFit
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					AllocatableResource: proto.Resource{
+						MilliCPU: 400,
+					},
+					RequestedResource: proto.Resource{
+						MilliCPU: 200,
+					},
+				},
+				Task: proto.Task{
+					RequestedResource: proto.Resource{
+						MilliCPU: 100,
+					},
+				},
+			},
+			name: "NodeResourcesFit",
+			path: "./plugin/filter-noderesourcesfit",
+		},
 		{
 			args: &proto.Args{
 				Node: proto.Node{
@@ -62,6 +93,22 @@ var (
 				},
 				Task: proto.Task{
 					NodeSelector: proto.Selector{
+						"disktype": []string{"ssd"},
+					},
+				},
+			},
+			name: "NodeAffinity",
+			path: "./plugin/filter-nodeaffinity",
+		},
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					Label: proto.Label{
+						"disktype": "ssd",
+					},
+				},
+				Task: proto.Task{
+					NodeSelector: proto.Selector{
 						"disktype": []string{"hdd"},
 					},
 				},
@@ -70,6 +117,18 @@ var (
 			path: "./plugin/filter-nodeaffinity",
 		},
 		// Plugin: NodeUnschedulable
+		{
+			args: &proto.Args{
+				Node: proto.Node{
+					Unschedulable: true,
+				},
+				Task: proto.Task{
+					ToleratesUnschedulable: true,
+				},
+			},
+			name: "NodeUnschedulable",
+			path: "./plugin/filter-nodeunschedulable",
+		},
 		{
 			args: &proto.Args{
 				Node: proto.Node{
@@ -88,7 +147,11 @@ var (
 func main() {
 	for _, item := range configs {
 		status, _ := helper(item.path, item.name, item.args)
-		fmt.Println(status.Error)
+		if status.Error == "" {
+			fmt.Println(item.name + ": pass")
+		} else {
+			fmt.Println(status.Error)
+		}
 	}
 }
 
