@@ -6,13 +6,14 @@ import (
 	"os/exec"
 
 	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
+	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/proto"
+	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/plugin"
 )
 
 type config struct {
-	args *proto.Args
+	args *plugin.Args
 	name string
 	path string
 }
@@ -21,11 +22,11 @@ var (
 	configs = []config{
 		// Plugin: NodeName
 		{
-			args: &proto.Args{
-				Node: proto.Node{
+			args: &plugin.Args{
+				Node: plugin.Node{
 					Name: "Node",
 				},
-				Task: proto.Task{
+				Task: plugin.Task{
 					NodeName: "Node",
 				},
 			},
@@ -33,11 +34,11 @@ var (
 			path: "./plugin/filter-nodename",
 		},
 		{
-			args: &proto.Args{
-				Node: proto.Node{
+			args: &plugin.Args{
+				Node: plugin.Node{
 					Name: "Node",
 				},
-				Task: proto.Task{
+				Task: plugin.Task{
 					NodeName: "Task",
 				},
 			},
@@ -46,17 +47,17 @@ var (
 		},
 		// Plugin: NodeResourcesFit
 		{
-			args: &proto.Args{
-				Node: proto.Node{
-					AllocatableResource: proto.Resource{
+			args: &plugin.Args{
+				Node: plugin.Node{
+					AllocatableResource: plugin.Resource{
 						MilliCPU: 400,
 					},
-					RequestedResource: proto.Resource{
+					RequestedResource: plugin.Resource{
 						MilliCPU: 200,
 					},
 				},
-				Task: proto.Task{
-					RequestedResource: proto.Resource{
+				Task: plugin.Task{
+					RequestedResource: plugin.Resource{
 						MilliCPU: 100,
 					},
 				},
@@ -65,17 +66,17 @@ var (
 			path: "./plugin/filter-noderesourcesfit",
 		},
 		{
-			args: &proto.Args{
-				Node: proto.Node{
-					AllocatableResource: proto.Resource{
+			args: &plugin.Args{
+				Node: plugin.Node{
+					AllocatableResource: plugin.Resource{
 						MilliCPU: 400,
 					},
-					RequestedResource: proto.Resource{
+					RequestedResource: plugin.Resource{
 						MilliCPU: 200,
 					},
 				},
-				Task: proto.Task{
-					RequestedResource: proto.Resource{
+				Task: plugin.Task{
+					RequestedResource: plugin.Resource{
 						MilliCPU: 500,
 					},
 				},
@@ -85,14 +86,14 @@ var (
 		},
 		// Plugin: NodeAffinity
 		{
-			args: &proto.Args{
-				Node: proto.Node{
-					Label: proto.Label{
+			args: &plugin.Args{
+				Node: plugin.Node{
+					Label: plugin.Label{
 						"disktype": "ssd",
 					},
 				},
-				Task: proto.Task{
-					NodeSelector: proto.Selector{
+				Task: plugin.Task{
+					NodeSelector: plugin.Selector{
 						"disktype": []string{"ssd"},
 					},
 				},
@@ -101,14 +102,14 @@ var (
 			path: "./plugin/filter-nodeaffinity",
 		},
 		{
-			args: &proto.Args{
-				Node: proto.Node{
-					Label: proto.Label{
+			args: &plugin.Args{
+				Node: plugin.Node{
+					Label: plugin.Label{
 						"disktype": "ssd",
 					},
 				},
-				Task: proto.Task{
-					NodeSelector: proto.Selector{
+				Task: plugin.Task{
+					NodeSelector: plugin.Selector{
 						"disktype": []string{"hdd"},
 					},
 				},
@@ -118,11 +119,11 @@ var (
 		},
 		// Plugin: NodeUnschedulable
 		{
-			args: &proto.Args{
-				Node: proto.Node{
+			args: &plugin.Args{
+				Node: plugin.Node{
 					Unschedulable: true,
 				},
-				Task: proto.Task{
+				Task: plugin.Task{
 					ToleratesUnschedulable: true,
 				},
 			},
@@ -130,11 +131,11 @@ var (
 			path: "./plugin/filter-nodeunschedulable",
 		},
 		{
-			args: &proto.Args{
-				Node: proto.Node{
+			args: &plugin.Args{
+				Node: plugin.Node{
 					Unschedulable: true,
 				},
-				Task: proto.Task{
+				Task: plugin.Task{
 					ToleratesUnschedulable: false,
 				},
 			},
@@ -155,8 +156,8 @@ func main() {
 	}
 }
 
-func helper(path, name string, args *proto.Args) (proto.Status, error) {
-	config := plugin.HandshakeConfig{
+func helper(path, name string, args *plugin.Args) (common.Status, error) {
+	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
 		MagicCookieKey:   "plugin-filter",
 		MagicCookieValue: "plugin-filter",
@@ -168,11 +169,11 @@ func helper(path, name string, args *proto.Args) (proto.Status, error) {
 		Level:  hclog.Error,
 	})
 
-	plugins := map[string]plugin.Plugin{
-		name: &proto.FilterPlugin{},
+	plugins := map[string]gop.Plugin{
+		name: &common.FilterPlugin{},
 	}
 
-	client := plugin.NewClient(&plugin.ClientConfig{
+	client := gop.NewClient(&gop.ClientConfig{
 		Cmd:             exec.Command(path),
 		HandshakeConfig: config,
 		Logger:          logger,
@@ -182,7 +183,7 @@ func helper(path, name string, args *proto.Args) (proto.Status, error) {
 
 	rpcClient, _ := client.Client()
 	raw, _ := rpcClient.Dispense(name)
-	n := raw.(proto.Filter)
+	n := raw.(common.Filter)
 	status := n.Filter(args)
 
 	return status, nil

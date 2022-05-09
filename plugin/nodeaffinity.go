@@ -3,8 +3,10 @@ package main
 import (
 	"sort"
 
-	"github.com/hashicorp/go-plugin"
-	"github.com/pipego/plugin-filter/proto"
+	gop "github.com/hashicorp/go-plugin"
+
+	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/plugin"
 )
 
 const (
@@ -13,8 +15,8 @@ const (
 
 type NodeAffinity struct{}
 
-func (n *NodeAffinity) Filter(args *proto.Args) proto.Status {
-	var status proto.Status
+func (n *NodeAffinity) Filter(args *plugin.Args) common.Status {
+	var status common.Status
 	found := false
 
 	for key, val := range args.Task.NodeSelector {
@@ -45,17 +47,17 @@ func (n *NodeAffinity) match(name string, list []string) bool {
 
 // nolint:typecheck
 func main() {
-	config := plugin.HandshakeConfig{
+	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
 		MagicCookieKey:   "plugin-filter",
 		MagicCookieValue: "plugin-filter",
 	}
 
-	pluginMap := map[string]plugin.Plugin{
-		"NodeAffinity": &proto.FilterPlugin{Impl: &NodeAffinity{}},
+	pluginMap := map[string]gop.Plugin{
+		"NodeAffinity": &common.FilterPlugin{Impl: &NodeAffinity{}},
 	}
 
-	plugin.Serve(&plugin.ServeConfig{
+	gop.Serve(&gop.ServeConfig{
 		HandshakeConfig: config,
 		Plugins:         pluginMap,
 	})

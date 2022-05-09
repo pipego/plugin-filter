@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/hashicorp/go-plugin"
-	"github.com/pipego/plugin-filter/proto"
+	gop "github.com/hashicorp/go-plugin"
+
+	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/plugin"
 )
 
 const (
@@ -11,8 +13,8 @@ const (
 
 type NodeName struct{}
 
-func (n *NodeName) Filter(args *proto.Args) proto.Status {
-	var status proto.Status
+func (n *NodeName) Filter(args *plugin.Args) common.Status {
+	var status common.Status
 
 	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
 		status.Error = ErrReasonName
@@ -23,17 +25,17 @@ func (n *NodeName) Filter(args *proto.Args) proto.Status {
 
 // nolint:typecheck
 func main() {
-	config := plugin.HandshakeConfig{
+	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
 		MagicCookieKey:   "plugin-filter",
 		MagicCookieValue: "plugin-filter",
 	}
 
-	pluginMap := map[string]plugin.Plugin{
-		"NodeName": &proto.FilterPlugin{Impl: &NodeName{}},
+	pluginMap := map[string]gop.Plugin{
+		"NodeName": &common.FilterPlugin{Impl: &NodeName{}},
 	}
 
-	plugin.Serve(&plugin.ServeConfig{
+	gop.Serve(&gop.ServeConfig{
 		HandshakeConfig: config,
 		Plugins:         pluginMap,
 	})
