@@ -15,8 +15,8 @@ const (
 
 type NodeAffinity struct{}
 
-func (n *NodeAffinity) Filter(args *plugin.Args) common.Status {
-	var status common.Status
+func (n *NodeAffinity) Run(args *plugin.Args) plugin.FilterResult {
+	var status plugin.FilterResult
 	found := false
 
 	for key, val := range args.Task.NodeSelector {

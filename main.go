@@ -156,7 +156,7 @@ func main() {
 	}
 }
 
-func helper(path, name string, args *plugin.Args) (common.Status, error) {
+func helper(path, name string, args *plugin.Args) (plugin.FilterResult, error) {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
 		MagicCookieKey:   "plugin-filter",
@@ -183,8 +183,8 @@ func helper(path, name string, args *plugin.Args) (common.Status, error) {
 
 	rpcClient, _ := client.Client()
 	raw, _ := rpcClient.Dispense(name)
-	n := raw.(common.Filter)
-	status := n.Filter(args)
+	n := raw.(plugin.FilterPlugin)
+	status := n.Run(args)
 
 	return status, nil
 }

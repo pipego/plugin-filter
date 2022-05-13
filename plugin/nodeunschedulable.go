@@ -13,8 +13,8 @@ const (
 
 type NodeUnschedulable struct{}
 
-func (n *NodeUnschedulable) Filter(args *plugin.Args) common.Status {
-	var status common.Status
+func (n *NodeUnschedulable) Run(args *plugin.Args) plugin.FilterResult {
+	var status plugin.FilterResult
 
 	if args.Node.Unschedulable && !args.Task.ToleratesUnschedulable {
 		status.Error = ErrReasonUnschedulable

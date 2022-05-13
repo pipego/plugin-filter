@@ -8,37 +8,29 @@ import (
 	"github.com/pipego/scheduler/plugin"
 )
 
-type Filter interface {
-	Filter(*plugin.Args) Status
-}
-
-type Status struct {
-	Error string
-}
-
 type FilterRPC struct {
 	client *rpc.Client
 }
 
-func (n *FilterRPC) Filter(args *plugin.Args) Status {
-	var resp Status
-	if err := n.client.Call("Plugin.Filter", args, &resp); err != nil {
+func (n *FilterRPC) Run(args *plugin.Args) plugin.FilterResult {
+	var resp plugin.FilterResult
+	if err := n.client.Call("Plugin.Run", args, &resp); err != nil {
 		panic(err)
 	}
 	return resp
 }
 
 type FilterRPCServer struct {
-	Impl Filter
+	Impl plugin.FilterPlugin
 }
 
-func (n *FilterRPCServer) Filter(args *plugin.Args, resp *Status) error {
-	*resp = n.Impl.Filter(args)
+func (n *FilterRPCServer) Run(args *plugin.Args, resp *plugin.FilterResult) error {
+	*resp = n.Impl.Run(args)
 	return nil
 }
 
 type FilterPlugin struct {
-	Impl Filter
+	Impl plugin.FilterPlugin
 }
 
 func (n *FilterPlugin) Server(*gop.MuxBroker) (interface{}, error) {

@@ -23,8 +23,8 @@ type InsufficientResource struct {
 	Capacity     int64
 }
 
-func (n *NodeResourcesFit) Filter(args *plugin.Args) common.Status {
-	var status common.Status
+func (n *NodeResourcesFit) Run(args *plugin.Args) plugin.FilterResult {
+	var status plugin.FilterResult
 
 	insufficientResources := n.fit(&args.Task, &args.Node)
 	if len(insufficientResources) != 0 {

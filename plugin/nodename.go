@@ -13,8 +13,8 @@ const (
 
 type NodeName struct{}
 
-func (n *NodeName) Filter(args *plugin.Args) common.Status {
-	var status common.Status
+func (n *NodeName) Run(args *plugin.Args) plugin.FilterResult {
+	var status plugin.FilterResult
 
 	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
 		status.Error = ErrReasonName
