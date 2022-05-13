@@ -3,7 +3,7 @@ package main
 import (
 	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/common"
 	"github.com/pipego/scheduler/plugin"
 )
 
@@ -13,7 +13,7 @@ const (
 
 type NodeName struct{}
 
-func (n *NodeName) Run(args *plugin.Args) plugin.FilterResult {
+func (n *NodeName) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 
 	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
@@ -27,12 +27,12 @@ func (n *NodeName) Run(args *plugin.Args) plugin.FilterResult {
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin-filter",
-		MagicCookieValue: "plugin-filter",
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
 	}
 
 	pluginMap := map[string]gop.Plugin{
-		"NodeName": &common.FilterPlugin{Impl: &NodeName{}},
+		"NodeName": &plugin.Filter{Impl: &NodeName{}},
 	}
 
 	gop.Serve(&gop.ServeConfig{

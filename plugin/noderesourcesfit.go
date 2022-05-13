@@ -5,7 +5,7 @@ import (
 
 	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/common"
 	"github.com/pipego/scheduler/plugin"
 )
 
@@ -23,7 +23,7 @@ type InsufficientResource struct {
 	Capacity     int64
 }
 
-func (n *NodeResourcesFit) Run(args *plugin.Args) plugin.FilterResult {
+func (n *NodeResourcesFit) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 
 	insufficientResources := n.fit(&args.Task, &args.Node)
@@ -38,7 +38,7 @@ func (n *NodeResourcesFit) Run(args *plugin.Args) plugin.FilterResult {
 	return status
 }
 
-func (n *NodeResourcesFit) fit(task *plugin.Task, node *plugin.Node) []InsufficientResource {
+func (n *NodeResourcesFit) fit(task *common.Task, node *common.Node) []InsufficientResource {
 	insufficientResources := make([]InsufficientResource, 0, 4)
 
 	if task.RequestedResource.MilliCPU == 0 &&
@@ -49,7 +49,7 @@ func (n *NodeResourcesFit) fit(task *plugin.Task, node *plugin.Node) []Insuffici
 
 	if task.RequestedResource.MilliCPU > (node.AllocatableResource.MilliCPU - node.RequestedResource.MilliCPU) {
 		insufficientResources = append(insufficientResources, InsufficientResource{
-			ResourceName: plugin.ResourceCPU,
+			ResourceName: common.ResourceCPU,
 			Reason:       "insufficient cpu",
 			Requested:    task.RequestedResource.MilliCPU,
 			Used:         node.RequestedResource.MilliCPU,
@@ -59,7 +59,7 @@ func (n *NodeResourcesFit) fit(task *plugin.Task, node *plugin.Node) []Insuffici
 
 	if task.RequestedResource.Memory > (node.AllocatableResource.Memory - node.RequestedResource.Memory) {
 		insufficientResources = append(insufficientResources, InsufficientResource{
-			ResourceName: plugin.ResourceMemory,
+			ResourceName: common.ResourceMemory,
 			Reason:       "insufficient memory",
 			Requested:    task.RequestedResource.Memory,
 			Used:         node.RequestedResource.Memory,
@@ -69,7 +69,7 @@ func (n *NodeResourcesFit) fit(task *plugin.Task, node *plugin.Node) []Insuffici
 
 	if task.RequestedResource.Storage > (node.AllocatableResource.Storage - node.RequestedResource.Storage) {
 		insufficientResources = append(insufficientResources, InsufficientResource{
-			ResourceName: plugin.ResourceStorage,
+			ResourceName: common.ResourceStorage,
 			Reason:       "insufficient storage",
 			Requested:    task.RequestedResource.Storage,
 			Used:         node.RequestedResource.Storage,
@@ -84,12 +84,12 @@ func (n *NodeResourcesFit) fit(task *plugin.Task, node *plugin.Node) []Insuffici
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin-filter",
-		MagicCookieValue: "plugin-filter",
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
 	}
 
 	pluginMap := map[string]gop.Plugin{
-		"NodeResourcesFit": &common.FilterPlugin{Impl: &NodeResourcesFit{}},
+		"NodeResourcesFit": &plugin.Filter{Impl: &NodeResourcesFit{}},
 	}
 
 	gop.Serve(&gop.ServeConfig{

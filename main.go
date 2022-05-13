@@ -8,12 +8,12 @@ import (
 	"github.com/hashicorp/go-hclog"
 	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/common"
 	"github.com/pipego/scheduler/plugin"
 )
 
 type config struct {
-	args *plugin.Args
+	args *common.Args
 	name string
 	path string
 }
@@ -22,11 +22,11 @@ var (
 	configs = []config{
 		// Plugin: NodeName
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
+			args: &common.Args{
+				Node: common.Node{
 					Name: "Node",
 				},
-				Task: plugin.Task{
+				Task: common.Task{
 					NodeName: "Node",
 				},
 			},
@@ -34,11 +34,11 @@ var (
 			path: "./plugin/filter-nodename",
 		},
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
+			args: &common.Args{
+				Node: common.Node{
 					Name: "Node",
 				},
-				Task: plugin.Task{
+				Task: common.Task{
 					NodeName: "Task",
 				},
 			},
@@ -47,17 +47,17 @@ var (
 		},
 		// Plugin: NodeResourcesFit
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
-					AllocatableResource: plugin.Resource{
+			args: &common.Args{
+				Node: common.Node{
+					AllocatableResource: common.Resource{
 						MilliCPU: 400,
 					},
-					RequestedResource: plugin.Resource{
+					RequestedResource: common.Resource{
 						MilliCPU: 200,
 					},
 				},
-				Task: plugin.Task{
-					RequestedResource: plugin.Resource{
+				Task: common.Task{
+					RequestedResource: common.Resource{
 						MilliCPU: 100,
 					},
 				},
@@ -66,17 +66,17 @@ var (
 			path: "./plugin/filter-noderesourcesfit",
 		},
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
-					AllocatableResource: plugin.Resource{
+			args: &common.Args{
+				Node: common.Node{
+					AllocatableResource: common.Resource{
 						MilliCPU: 400,
 					},
-					RequestedResource: plugin.Resource{
+					RequestedResource: common.Resource{
 						MilliCPU: 200,
 					},
 				},
-				Task: plugin.Task{
-					RequestedResource: plugin.Resource{
+				Task: common.Task{
+					RequestedResource: common.Resource{
 						MilliCPU: 500,
 					},
 				},
@@ -86,14 +86,14 @@ var (
 		},
 		// Plugin: NodeAffinity
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
-					Label: plugin.Label{
+			args: &common.Args{
+				Node: common.Node{
+					Label: common.Label{
 						"disktype": "ssd",
 					},
 				},
-				Task: plugin.Task{
-					NodeSelector: plugin.Selector{
+				Task: common.Task{
+					NodeSelector: common.Selector{
 						"disktype": []string{"ssd"},
 					},
 				},
@@ -102,14 +102,14 @@ var (
 			path: "./plugin/filter-nodeaffinity",
 		},
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
-					Label: plugin.Label{
+			args: &common.Args{
+				Node: common.Node{
+					Label: common.Label{
 						"disktype": "ssd",
 					},
 				},
-				Task: plugin.Task{
-					NodeSelector: plugin.Selector{
+				Task: common.Task{
+					NodeSelector: common.Selector{
 						"disktype": []string{"hdd"},
 					},
 				},
@@ -119,11 +119,11 @@ var (
 		},
 		// Plugin: NodeUnschedulable
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
+			args: &common.Args{
+				Node: common.Node{
 					Unschedulable: true,
 				},
-				Task: plugin.Task{
+				Task: common.Task{
 					ToleratesUnschedulable: true,
 				},
 			},
@@ -131,11 +131,11 @@ var (
 			path: "./plugin/filter-nodeunschedulable",
 		},
 		{
-			args: &plugin.Args{
-				Node: plugin.Node{
+			args: &common.Args{
+				Node: common.Node{
 					Unschedulable: true,
 				},
-				Task: plugin.Task{
+				Task: common.Task{
 					ToleratesUnschedulable: false,
 				},
 			},
@@ -156,21 +156,21 @@ func main() {
 	}
 }
 
-func helper(path, name string, args *plugin.Args) (plugin.FilterResult, error) {
+func helper(path, name string, args *common.Args) (plugin.FilterResult, error) {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin-filter",
-		MagicCookieValue: "plugin-filter",
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
 	}
 
 	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "plugin-filter",
+		Name:   "plugin",
 		Output: os.Stderr,
 		Level:  hclog.Error,
 	})
 
 	plugins := map[string]gop.Plugin{
-		name: &common.FilterPlugin{},
+		name: &plugin.Filter{},
 	}
 
 	client := gop.NewClient(&gop.ClientConfig{

@@ -5,7 +5,7 @@ import (
 
 	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/common"
 	"github.com/pipego/scheduler/plugin"
 )
 
@@ -15,7 +15,7 @@ const (
 
 type NodeAffinity struct{}
 
-func (n *NodeAffinity) Run(args *plugin.Args) plugin.FilterResult {
+func (n *NodeAffinity) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 	found := false
 
@@ -49,12 +49,12 @@ func (n *NodeAffinity) match(name string, list []string) bool {
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin-filter",
-		MagicCookieValue: "plugin-filter",
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
 	}
 
 	pluginMap := map[string]gop.Plugin{
-		"NodeAffinity": &common.FilterPlugin{Impl: &NodeAffinity{}},
+		"NodeAffinity": &plugin.Filter{Impl: &NodeAffinity{}},
 	}
 
 	gop.Serve(&gop.ServeConfig{

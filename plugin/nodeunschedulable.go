@@ -3,7 +3,7 @@ package main
 import (
 	gop "github.com/hashicorp/go-plugin"
 
-	"github.com/pipego/plugin-filter/common"
+	"github.com/pipego/scheduler/common"
 	"github.com/pipego/scheduler/plugin"
 )
 
@@ -13,7 +13,7 @@ const (
 
 type NodeUnschedulable struct{}
 
-func (n *NodeUnschedulable) Run(args *plugin.Args) plugin.FilterResult {
+func (n *NodeUnschedulable) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 
 	if args.Node.Unschedulable && !args.Task.ToleratesUnschedulable {
@@ -27,12 +27,12 @@ func (n *NodeUnschedulable) Run(args *plugin.Args) plugin.FilterResult {
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin-filter",
-		MagicCookieValue: "plugin-filter",
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
 	}
 
 	var pluginMap = map[string]gop.Plugin{
-		"NodeUnschedulable": &common.FilterPlugin{Impl: &NodeUnschedulable{}},
+		"NodeUnschedulable": &plugin.Filter{Impl: &NodeUnschedulable{}},
 	}
 
 	gop.Serve(&gop.ServeConfig{
