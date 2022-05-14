@@ -183,7 +183,7 @@ func helper(path, name string, args *common.Args) (plugin.FilterResult, error) {
 
 	rpcClient, _ := client.Client()
 	raw, _ := rpcClient.Dispense(name)
-	n := raw.(plugin.FilterPlugin)
+	n := raw.(plugin.FilterImpl)
 	status := n.Run(args)
 
 	return status, nil
