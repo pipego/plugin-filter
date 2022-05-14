@@ -143,6 +143,18 @@ var (
 			path: "./plugin/filter-nodeunschedulable",
 		},
 	}
+
+	handshake = gop.HandshakeConfig{
+		ProtocolVersion:  1,
+		MagicCookieKey:   "plugin",
+		MagicCookieValue: "plugin",
+	}
+
+	logger = hclog.New(&hclog.LoggerOptions{
+		Name:   "plugin",
+		Output: os.Stderr,
+		Level:  hclog.Error,
+	})
 )
 
 func main() {
@@ -157,25 +169,13 @@ func main() {
 }
 
 func helper(path, name string, args *common.Args) (plugin.FilterResult, error) {
-	config := gop.HandshakeConfig{
-		ProtocolVersion:  1,
-		MagicCookieKey:   "plugin",
-		MagicCookieValue: "plugin",
-	}
-
-	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   "plugin",
-		Output: os.Stderr,
-		Level:  hclog.Error,
-	})
-
 	plugins := map[string]gop.Plugin{
 		name: &plugin.Filter{},
 	}
 
 	client := gop.NewClient(&gop.ClientConfig{
 		Cmd:             exec.Command(path),
-		HandshakeConfig: config,
+		HandshakeConfig: handshake,
 		Logger:          logger,
 		Plugins:         plugins,
 	})
