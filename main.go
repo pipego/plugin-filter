@@ -88,14 +88,10 @@ var (
 		{
 			args: &common.Args{
 				Node: common.Node{
-					Label: common.Label{
-						"disktype": "ssd",
-					},
+					Label: "ssd",
 				},
 				Task: common.Task{
-					NodeSelector: common.Selector{
-						"disktype": []string{"ssd"},
-					},
+					NodeSelector: []string{"ssd"},
 				},
 			},
 			name: "NodeAffinity",
@@ -104,14 +100,10 @@ var (
 		{
 			args: &common.Args{
 				Node: common.Node{
-					Label: common.Label{
-						"disktype": "ssd",
-					},
+					Label: "ssd",
 				},
 				Task: common.Task{
-					NodeSelector: common.Selector{
-						"disktype": []string{"hdd"},
-					},
+					NodeSelector: []string{"hdd"},
 				},
 			},
 			name: "NodeAffinity",
