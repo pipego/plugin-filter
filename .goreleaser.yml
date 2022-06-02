@@ -1,13 +1,77 @@
 ---
 builds:
-  - env: [CGO_ENABLED=0]
+  - id: plugin-filter-test
+    env:
+      - CGO_ENABLED=0
     goos:
       - darwin
       - linux
       - windows
     goarch:
       - amd64
-    main: .
+    dir: .
+    main: main.go
+    binary: plugin-filter-test
+    flags:
+      - -trimpath
+    ldflags: -s -w -X config.Build={{.Date}} -X config.Version={{.Version}}
+  - id: filter-nodeaffinity
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+    dir: plugin
+    main: nodeaffinity.go
+    binary: filter-nodeaffinity
+    flags:
+      - -trimpath
+    ldflags: -s -w -X config.Build={{.Date}} -X config.Version={{.Version}}
+  - id: filter-nodename
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+    dir: plugin
+    main: nodename.go
+    binary: filter-nodename
+    flags:
+      - -trimpath
+    ldflags: -s -w -X config.Build={{.Date}} -X config.Version={{.Version}}
+  - id: filter-noderesourcesfit
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+    dir: plugin
+    main: noderesourcesfit.go
+    binary: filter-noderesourcesfit
+    flags:
+      - -trimpath
+    ldflags: -s -w -X config.Build={{.Date}} -X config.Version={{.Version}}
+  - id: filter-nodeunschedulable
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+    dir: plugin
+    main: nodeunschedulable.go
+    binary: filter-nodeunschedulable
     flags:
       - -trimpath
     ldflags: -s -w -X config.Build={{.Date}} -X config.Version={{.Version}}
