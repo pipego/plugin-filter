@@ -16,7 +16,7 @@ type NodeName struct{}
 func (n *NodeName) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 
-	if args.Task.NodeName != "" && args.Task.NodeName != args.Node.Name {
+	if args.Task.NodeName == "" || args.Task.NodeName != args.Node.Name {
 		status.Error = ErrReasonName
 	}
 
