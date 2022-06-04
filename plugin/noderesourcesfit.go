@@ -26,6 +26,13 @@ type InsufficientResource struct {
 func (n *NodeResourcesFit) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 
+	if args.Task.RequestedResource.MilliCPU <= 0 &&
+		args.Task.RequestedResource.Memory <= 0 &&
+		args.Task.RequestedResource.Storage <= 0 {
+		status.Error = ErrReasonResourcesFit + ": " + "invalid resource"
+		return status
+	}
+
 	insufficientResources := n.fit(&args.Task, &args.Node)
 	if len(insufficientResources) != 0 {
 		failureReasons := make([]string, 0, len(insufficientResources))
@@ -40,12 +47,6 @@ func (n *NodeResourcesFit) Run(args *common.Args) plugin.FilterResult {
 
 func (n *NodeResourcesFit) fit(task *common.Task, node *common.Node) []InsufficientResource {
 	insufficientResources := make([]InsufficientResource, 0, 4)
-
-	if task.RequestedResource.MilliCPU == 0 &&
-		task.RequestedResource.Memory == 0 &&
-		task.RequestedResource.Storage == 0 {
-		return insufficientResources
-	}
 
 	if task.RequestedResource.MilliCPU > (node.AllocatableResource.MilliCPU - node.RequestedResource.MilliCPU) {
 		insufficientResources = append(insufficientResources, InsufficientResource{
