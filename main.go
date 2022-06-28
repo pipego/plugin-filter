@@ -91,7 +91,7 @@ var (
 					Label: "ssd",
 				},
 				Task: common.Task{
-					NodeSelector: []string{"ssd"},
+					NodeSelectors: []string{"ssd"},
 				},
 			},
 			name: "NodeAffinity",
@@ -103,7 +103,7 @@ var (
 					Label: "ssd",
 				},
 				Task: common.Task{
-					NodeSelector: []string{"hdd"},
+					NodeSelectors: []string{"hdd"},
 				},
 			},
 			name: "NodeAffinity",
