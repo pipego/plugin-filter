@@ -19,7 +19,7 @@ func (n *NodeAffinity) Run(args *common.Args) plugin.FilterResult {
 	var status plugin.FilterResult
 	found := false
 
-	for _, item := range args.Task.NodeSelector {
+	for _, item := range args.Task.NodeSelectors {
 		if args.Node.Label == item {
 			found = true
 		}
