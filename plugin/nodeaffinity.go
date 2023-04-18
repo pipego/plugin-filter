@@ -1,3 +1,4 @@
+//nolint:typecheck
 package main
 
 import (
@@ -43,7 +44,6 @@ func (n *NodeAffinity) match(name string, list []string) bool {
 	return true
 }
 
-// nolint:typecheck
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,

@@ -1,3 +1,4 @@
+//nolint:typecheck
 package main
 
 import (
@@ -81,7 +82,6 @@ func (n *NodeResourcesFit) fit(task *common.Task, node *common.Node) []Insuffici
 	return insufficientResources
 }
 
-// nolint:typecheck
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,

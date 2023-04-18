@@ -1,3 +1,4 @@
+//nolint:typecheck
 package main
 
 import (
@@ -23,7 +24,6 @@ func (n *NodeName) Run(args *common.Args) plugin.FilterResult {
 	return status
 }
 
-// nolint:typecheck
 func main() {
 	config := gop.HandshakeConfig{
 		ProtocolVersion:  1,
