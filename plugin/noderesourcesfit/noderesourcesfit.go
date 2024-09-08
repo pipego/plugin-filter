@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	capacityResource      = 4
 	ErrReasonResourcesFit = "NodeResourcesFit: node(s) didn't fit the resources"
 )
 
@@ -47,7 +48,7 @@ func (n *NodeResourcesFit) Run(args *common.Args) plugin.FilterResult {
 }
 
 func (n *NodeResourcesFit) fit(task *common.Task, node *common.Node) []InsufficientResource {
-	insufficientResources := make([]InsufficientResource, 0, 4)
+	insufficientResources := make([]InsufficientResource, 0, capacityResource)
 
 	if task.RequestedResource.MilliCPU > (node.AllocatableResource.MilliCPU - node.RequestedResource.MilliCPU) {
 		insufficientResources = append(insufficientResources, InsufficientResource{
